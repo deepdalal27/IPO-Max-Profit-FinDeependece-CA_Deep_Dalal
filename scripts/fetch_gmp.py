@@ -91,6 +91,59 @@ def qib_details(url):
     return out
 
 
+def name_key(s):
+    s = re.sub(r"\b(ltd|limited|ipo|india|the|company|co)\b", "", (s or "").lower())
+    return re.sub(r"[^a-z0-9]", "", s)
+
+
+def name_match(a, b):
+    x, y = name_key(a), name_key(b)
+    return bool(x and y) and (x == y or x.startswith(y) or y.startswith(x))
+
+
+def live_subs():
+    """Freshest QIB subscription (x) per IPO: ipopremium.in/view/subscription first,
+    Chittorgarh live report 21 as fallback. Returns [{name, x, at, src}]."""
+    got = {}
+    now = dt.date.today()
+    fy = f"{now.year}-{(now.year + 1) % 100:02d}" if now.month >= 4 else f"{now.year - 1}-{now.year % 100:02d}"
+    for board in ("mainboard", "sme"):
+        url = f"https://webnodejs.chittorgarh.com/cloud/report/data-read/21/1/1/{now.year}/{fy}/0/{board}"
+        try:
+            data = json.loads(get(url, Accept="application/json", Referer="https://www.chittorgarh.com/"))
+        except Exception as e:
+            print(f"chittorgarh {board}: {e}")
+            continue
+        for r in data.get("reportTableData") or []:
+            nk = next((k for k in r if "company" in k.lower() and not k.startswith("~")), None)
+            name = text(str(r[nk])) if nk else str(r.get("~URLRewrite_Folder_Name") or "").replace("-", " ")
+            q = r.get("QIB (x)")
+            try:
+                q = float(q) if isinstance(q, (int, float)) else float(re.sub(r"[^\d.]", "", str(q or "")))
+            except ValueError:
+                continue
+            if name:
+                got[name_key(name)] = {"name": name, "x": q, "at": str(r.get("Subscription as on") or "").strip(), "src": "Chittorgarh"}
+    try:
+        page = get(HOME + "view/subscription")
+        txt = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page)))
+        idx = []
+        for m in re.finditer(r"([A-Z][\w .,&'()\-]{2,70}?)\s*\((?:Mainboard|BSE SME|NSE SME|NSE Emerge)\)", txt):
+            nm = re.sub(r"^(?:AM|PM)\s+", "", re.sub(r"^.*\d[\d,.]*\s+", "", m.group(1))).strip()
+            idx.append((m.start() + m.group(0).find(nm), nm))
+        for k, (i, name) in enumerate(idx):
+            seg = txt[i:idx[k + 1][0] if k + 1 < len(idx) else i + 5000]
+            q = re.search(r"QIBs?\s+[\d,]+\s+[\d,]+\s+([\d.]+)", seg)
+            u = re.search(r"Last updated on\s*(\d{1,2}-\w{3}-\d{4}[\s\d:APMapm]*)", seg)
+            if q:
+                got[name_key(name)] = {"name": name, "x": float(q.group(1)), "at": u.group(1).strip() if u else "", "src": "ipopremium"}
+    except Exception as e:
+        print(f"ipopremium subscription page: {e}")
+    for v in got.values():
+        print(f"live QIB: {v['name']!r} {v['x']}x ({v['src']}, {v['at']})")
+    return list(got.values())
+
+
 def main():
     page = get(HOME)
     m = re.search(r'ajax:\s*\{\s*url:\s*"([^"]+)"', page)
@@ -148,6 +201,12 @@ def main():
             ipos[-1].update(maxQibSh=detail["totalOfferedSh"], maxQibSrc="ipopremium (estimate)")
     if not ipos:
         sys.exit("no current IPOs parsed; keeping previous gmp.json")
+    # overlay the freshest live QIB subscription (the IPO detail pages lag behind)
+    live = live_subs()
+    for ipo in ipos:
+        hit = next((v for v in live if name_match(v["name"], ipo["name"])), None)
+        if hit:
+            ipo.update(subs=hit["x"], subsSrc=hit["src"], subsAt=hit["at"])
     out = {"source": HOME, "updated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "ipos": ipos}
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=1)

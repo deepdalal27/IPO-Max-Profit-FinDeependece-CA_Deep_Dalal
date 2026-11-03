@@ -204,7 +204,7 @@ footer b{color:var(--ink)}
     <button class="tab" data-v="cmp">Compare IPOs</button>
     <button class="tab" data-v="list">Manage IPOs</button>
   </div>
-  <button class="btn t" id="syncBtn">↻ Refresh GMP</button>
+  <button class="btn t" id="syncBtn">↻ Refresh GMP &amp; subscription</button>
   <span id="stamp" style="font-size:.72rem;color:var(--muted)"></span>
 </div>
 
@@ -384,7 +384,7 @@ function load(){
 function pickSel(){if(!S.sel||!S.ipos.find(i=>i.id===S.sel))S.sel=S.ipos[0]&&S.ipos[0].id}
 
 /* ---------- live GMP feed (gmp.json, refreshed from ipopremium.in by a GitHub Action) ---------- */
-const FEED_KEYS=['name','exch','priceLow','priceHigh','lot','gmp','issueCr','open','close','allot','listing','subs','qibCr','mfCr','maxQibSh','maxQibSrc'];
+const FEED_KEYS=['name','exch','priceLow','priceHigh','lot','gmp','issueCr','open','close','allot','listing','subs','subsSrc','subsAt','qibCr','mfCr','maxQibSh','maxQibSrc'];
 let feed=null;
 async function sync(){
   try{
@@ -414,10 +414,79 @@ async function sync(){
       const it=(ex.items||[]).find(x=>x.key===normName(ipo.name));
       if(it){ipo.maxQibSh=it.maxQibSh;ipo.maxQibSrc=`${it.exchange} (${it.symbol}, ${when})`}});
   }catch(e){}
+  applyLiveSubs();
   S.fresh=false;pickSel();save();
   const t=new Date(feed.updated);
   $('#stamp').innerHTML=`<span class="dot"></span>Live data from <a href="https://www.ipopremium.in/" target="_blank" rel="noopener" style="color:var(--green-dark)">ipopremium.in</a> · updated ${t.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})} · auto-refreshing`;
+  stampLive();
   renderAll();
+}
+/* ---------- live QIB subscription, fetched in the browser every 2 minutes ----------
+   Sources (freshest first): ipopremium.in/view/subscription, then Chittorgarh live report 21.
+   Same relay chain as the FinDeependence IPO Tracker; values you type yourself are never overwritten. */
+const LIVE_PROXIES=[
+  u=>'https://fd-license.deepuploads27.workers.dev/data?u='+encodeURIComponent(u),
+  u=>'https://script.google.com/macros/s/AKfycbyJhJb5xra7aJ9KU5appPOxo8VIZVs9jmAyn0IZ1soi81erNNaE09bW_lKK-5PsY8bK/exec?u='+encodeURIComponent(u),
+  u=>u,
+  u=>'https://api.allorigins.win/raw?url='+encodeURIComponent(u),
+  u=>'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(u)];
+let LIVE={}, liveAt=null, liveBusy=false;
+function nameKey(s){return String(s??'').toLowerCase().replace(/\b(ltd|limited|ipo|india|the|company|co)\b/g,'').replace(/[^a-z0-9]/g,'')}
+function nameMatch(a,b){const x=nameKey(a),y=nameKey(b);if(!x||!y)return false;return x===y||x.startsWith(y)||y.startsWith(x)}
+async function viaProxies(url,ok,ms=15000){
+  for(const wrap of LIVE_PROXIES){
+    try{const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);
+      const r=await fetch(wrap(url),{cache:'no-store',signal:c.signal}).finally(()=>clearTimeout(t));
+      if(!r.ok)continue;const txt=await r.text();if(ok(txt))return txt;
+    }catch(e){}
+  }
+  return null;
+}
+function parsePremiumSubs(txt){ // ipopremium.in/view/subscription page text -> [{name,qib,updated}]
+  const out=[],idx=[],re=/([A-Z][\w .,&'()\-]{2,70}?)\s*\((Mainboard|BSE SME|NSE SME|NSE Emerge)\)/g;let m;
+  while((m=re.exec(txt))){const nm=m[1].replace(/^.*\d[\d,.]*\s+/,'').replace(/^(?:AM|PM)\s+/,'').trim();idx.push({i:m.index+m[0].indexOf(nm),name:nm})}
+  for(let k=0;k<idx.length;k++){
+    const seg=txt.slice(idx[k].i,idx[k+1]?idx[k+1].i:idx[k].i+5000);
+    const q=seg.match(/QIBs?\s+[\d,]+\s+[\d,]+\s+([\d.]+)/), u=seg.match(/Last updated on\s*([\d]{1,2}-\w{3}-\d{4}[\s\d:APMapm]*)/);
+    if(q)out.push({name:idx[k].name,qib:parseFloat(q[1]),updated:u?u[1].trim():''});
+  }
+  return out;
+}
+async function fetchLiveSubs(){
+  if(liveBusy)return;liveBusy=true;
+  try{
+    const now=new Date(),Y=now.getFullYear(),FY=now.getMonth()+1>=4?`${Y}-${String((Y+1)%100).padStart(2,'0')}`:`${Y-1}-${String(Y%100).padStart(2,'0')}`;
+    const CG=b=>`https://webnodejs.chittorgarh.com/cloud/report/data-read/21/1/1/${Y}/${FY}/0/${b}`;
+    const isJ=t=>{try{return !!JSON.parse(t).reportTableData}catch(e){return false}};
+    const [ph,cm,cs]=await Promise.all([
+      viaProxies('https://www.ipopremium.in/view/subscription',t=>t.length>5000&&/QIB/i.test(t)),
+      viaProxies(CG('mainboard'),isJ),viaProxies(CG('sme'),isJ)]);
+    const got={};
+    [cm,cs].forEach(t=>{if(!t)return;(JSON.parse(t).reportTableData||[]).forEach(r=>{
+      const nk=Object.keys(r).find(k=>/company/i.test(k)&&!k.startsWith('~'));
+      const name=(nk?String(r[nk]).replace(/<[^>]*>/g,' '):'')||String(r['~URLRewrite_Folder_Name']||'').replace(/-/g,' ');
+      const q=typeof r['QIB (x)']==='number'?r['QIB (x)']:parseFloat(String(r['QIB (x)']||'').replace(/[^\d.]/g,''));
+      if(name&&isFinite(q))got[nameKey(name)]={name,x:q,at:String(r['Subscription as on']||'').trim(),src:'Chittorgarh'};})});
+    if(ph){const d=new DOMParser().parseFromString(ph.replace(/></g,'> <'),'text/html');
+      parsePremiumSubs(d.body.textContent.replace(/\s+/g,' ')).forEach(r=>{if(isFinite(r.qib))got[nameKey(r.name)]={name:r.name,x:r.qib,at:r.updated,src:'ipopremium'}})}
+    if(Object.keys(got).length){LIVE=got;liveAt=new Date();if(applyLiveSubs()){save();renderAll()}stampLive()}
+  }finally{liveBusy=false}
+}
+function applyLiveSubs(){
+  let changed=false;
+  S.ipos.forEach(ipo=>{
+    const hit=Object.values(LIVE).find(v=>nameMatch(v.name,ipo.name));
+    if(!hit)return;
+    ipo.liveX=hit.x;ipo.subsSrc=hit.src;ipo.subsAt=hit.at;
+    if(!(ipo.edited||[]).includes('subs')&&n(ipo.subs)!==hit.x){ipo.subs=hit.x;changed=true}
+  });
+  return changed;
+}
+function stampLive(){
+  const el=$('#stamp');if(!el||!liveAt)return;
+  const t=liveAt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  let q=el.querySelector('.lq');if(!q){q=document.createElement('span');q.className='lq';el.appendChild(q)}
+  q.textContent=` · QIB subscription live, checked ${t}`;
 }
 // company name -> first two significant words (same rule as scripts/fetch_exchange.ps1)
 function normName(s){return (s||'').toLowerCase().replace(/\b(limited|ltd|the|and|india)\b|&|[^a-z0-9 ]/g,' ').split(/\s+/).filter(Boolean).slice(0,2).join(' ')}
@@ -493,7 +562,8 @@ function fillForm(){
   // hint under each key input: where the value came from, and a one-click way back to the live value
   const hint=(k,liveTxt,edTxt)=>!lv?'':ed.includes(k)?`<span class="ed">You changed this</span> · live ${edTxt} · <span class="rs" data-rs="${k}">↺ use live</span>`:liveTxt;
   $('#liveGmp').innerHTML=hint('gmp',`Live from ipopremium · ${num(a.gmpPct,1)}% listing gain`,'₹'+(lv?.gmp))||`${num(a.gmpPct,1)}% listing gain`;
-  $('#liveSubs').innerHTML=hint('subs','Live QIB subscription from ipopremium',num(n(lv?.subs),2)+'x')||'Times the QIB portion is subscribed';
+  const subTxt=ipo.subsSrc?`Live QIB subscription · ${ipo.subsSrc}${ipo.subsAt?' · as on '+esc(ipo.subsAt):''}`:'Live QIB subscription from ipopremium';
+  $('#liveSubs').innerHTML=(ipo.subsSrc&&!ed.includes('subs')?subTxt:hint('subs',subTxt,num(n(ipo.liveX??lv?.subs),2)+'x'))||'Times the QIB portion is subscribed';
   $('#maxSrc').innerHTML=!a.maxQib?'Not published yet — type it from the NSE/BSE issue page':
     (ed.includes('maxQibSh')?`<span class="ed">You changed this</span> · ${num(a.maxQibSh)} shares · <span class="rs" data-rs="maxQibSh">↺ use exchange value</span>`
       :`${num(a.maxQibSh)} shares · ${esc(a.maxQibSrc)}${/estimate/.test(a.maxQibSrc)?' — verify in RHP':''}`);
@@ -532,10 +602,10 @@ function renderCalc(){
   $('#xCount').value=rows.length;
   const live=n(ipo.subs)>0?allot(a,ipo.subs):null;
   // live subscription gets its own snapshot card instead of a table row
-  const lv=liveOf(ipo), fromLive=lv&&!(ipo.edited||[]).includes('subs');
+  const lv=liveOf(ipo), fromLive=(lv||ipo.subsSrc)&&!(ipo.edited||[]).includes('subs');
   $('#liveCard').innerHTML=!live?`<div class="livecard none">Live QIB subscription not available yet — it fills in from ipopremium once QIBs start bidding (or type it in IPO details).</div>`:
     `<div class="livecard"><div class="lh"><span class="tag"><i></i>LIVE</span><b style="font-size:.9rem">Your allotment at today's QIB subscription</b>
-      <span class="src">${fromLive?'ipopremium · '+$('#stamp').textContent.replace(/^.*updated /,'updated '):'your entry'}</span></div>
+      <span class="src">${fromLive?(ipo.subsSrc?esc(ipo.subsSrc)+(ipo.subsAt?' · as on '+esc(ipo.subsAt):''):'ipopremium · '+$('#stamp').textContent.replace(/^.*updated /,'updated ').replace(/ · QIB.*$/,'')):'your entry'}</span></div>
       <div class="bigx"><b>${num(live.x,2)}x</b><span>QIB subscribed · allotment ratio ${pct(live.ratio)} · ${num(live.raw,2)} shares proportionate → ${rdesc(a)}</span></div>
       <div class="tiles">
         <div class="t hot"><div class="l">You get</div><div class="v">${num(live.sh)} sh</div><div class="s">${num(live.lots,2)} lots${live.lottery?` · ${num(live.lottery*100,1)}% lottery`:''}</div></div>
@@ -890,7 +960,7 @@ function bind(){
   ['xStart','xStep','xSwitch','xStep2','xMax'].forEach(k=>{$('#'+k).value=S[k];$('#'+k).addEventListener('input',e=>{S[k]=n(e.target.value);save();renderCalc();renderCmp()})});
   $$('#roundT button').forEach(b=>b.onclick=()=>{S.round=b.dataset.r;save();renderCalc();renderCmp()});
   $('#pdfBtn').onclick=ipoPdf;
-  $('#syncBtn').onclick=sync;
+  $('#syncBtn').onclick=()=>{sync();fetchLiveSubs()};
   $('#resetLive').onclick=()=>{const ipo=cur();ipo.edited=[];sync()};
   $('#cSubs').addEventListener('change',e=>{if(e.target.value==='')return;S.ipos.forEach(i=>{i.subs=n(e.target.value);markEdited(i,'subs')});save();renderCmp();fillForm();renderCalc()});
   $('#cReset').onclick=()=>{S.ipos.forEach(i=>{i.edited=(i.edited||[]).filter(k=>k!=='gmp'&&k!=='subs')});$('#cSubs').value='';sync()};
@@ -927,11 +997,13 @@ function bind(){
 // re-render compare table without losing focus on the input being typed in
 function renderCmpKeep(){renderCmp()}
 
-load();bind();renderAll();sync();
+load();bind();renderAll();sync();fetchLiveSubs();
 // keep pulling fresh data while the page is open (and as soon as you come back to the tab),
 // but never while you are typing in a box
 const idleSync=()=>{if(!document.hidden&&!(document.activeElement&&document.activeElement.matches('input,select')))sync()};
 setInterval(idleSync,5*60*1000);
+setInterval(()=>{if(!document.hidden)fetchLiveSubs()},2*60*1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(!liveAt||Date.now()-liveAt>60000))fetchLiveSubs()});
 document.addEventListener('visibilitychange',idleSync);
 </script>
 </body>
