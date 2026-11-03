@@ -1,6 +1,6 @@
 {
  "source": "https://www.ipopremium.in/",
- "updated": "2026-11-03T06:37:11+00:00",
+ "updated": "2026-11-03T08:58:51+00:00",
  "ipos": [
   {
    "src": 1432,
@@ -17,11 +17,13 @@
    "close": "2026-11-04",
    "allot": "2026-11-05",
    "listing": "2026-11-09",
-   "subs": 1.0,
+   "subs": 327.27,
    "qibCr": 0.64,
    "mfCr": 0.0,
    "maxQibSh": 5725200,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:25"
   },
   {
    "src": 1431,
@@ -42,7 +44,9 @@
    "qibCr": 10.08,
    "mfCr": "",
    "maxQibSh": 3360000,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:25"
   },
   {
    "src": 1428,
@@ -52,18 +56,20 @@
    "priceLow": 190.0,
    "priceHigh": 200.0,
    "lot": 600,
-   "gmp": 8.0,
-   "gmpPct": 4.0,
+   "gmp": 9.0,
+   "gmpPct": 4.5,
    "issueCr": 56.02,
    "open": "2026-10-30",
    "close": "2026-11-03",
    "allot": "2026-11-04",
    "listing": "2026-11-06",
-   "subs": 0.99,
+   "subs": 8.29,
    "qibCr": 10.62,
    "mfCr": "",
    "maxQibSh": 1864200,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:24"
   },
   {
    "src": 1430,
@@ -80,11 +86,13 @@
    "close": "2026-11-03",
    "allot": "2026-11-04",
    "listing": "2026-11-06",
-   "subs": 10.49,
+   "subs": 86.11,
    "qibCr": 10.79,
    "mfCr": 0.0,
    "maxQibSh": 2401600,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:25"
   },
   {
    "src": 1429,
@@ -94,18 +102,20 @@
    "priceLow": 114.0,
    "priceHigh": 120.0,
    "lot": 1200,
-   "gmp": 20.0,
-   "gmpPct": 16.67,
+   "gmp": 25.0,
+   "gmpPct": 20.83,
    "issueCr": 34.56,
    "open": "2026-10-30",
    "close": "2026-11-03",
    "allot": "2026-11-04",
    "listing": "2026-11-06",
-   "subs": 5.5,
+   "subs": 45.62,
    "qibCr": 6.57,
    "mfCr": 0.0,
    "maxQibSh": 1921200,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:24"
   },
   {
    "src": 1427,
@@ -126,7 +136,9 @@
    "qibCr": 0.24,
    "mfCr": "",
    "maxQibSh": 3306000,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "03-Nov-2026 14:24"
   },
   {
    "src": 1424,
@@ -147,7 +159,9 @@
    "qibCr": 37.43,
    "mfCr": 1.0,
    "maxQibSh": 15726525,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "02-Nov-2026 17:54"
   },
   {
    "src": 1426,
@@ -189,7 +203,9 @@
    "qibCr": 5.35,
    "mfCr": "",
    "maxQibSh": 2361600,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "30-Oct-2026 17:55"
   },
   {
    "src": 1422,
@@ -199,8 +215,8 @@
    "priceLow": 153.0,
    "priceHigh": 162.0,
    "lot": 91,
-   "gmp": 9.25,
-   "gmpPct": 5.71,
+   "gmp": 10.0,
+   "gmpPct": 6.17,
    "issueCr": 275.4,
    "open": "2026-10-28",
    "close": "2026-10-30",
@@ -210,7 +226,9 @@
    "qibCr": 55.08,
    "mfCr": 0.02,
    "maxQibSh": 11900000,
-   "maxQibSrc": "ipopremium (estimate)"
+   "maxQibSrc": "ipopremium (estimate)",
+   "subsSrc": "Chittorgarh",
+   "subsAt": "30-Oct-2026 17:54"
   }
  ]
 }
