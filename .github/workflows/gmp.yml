@@ -1,0 +1,35 @@
+name: Update GMP
+
+on:
+  schedule:
+    # every 15 minutes, round the clock, every day (GitHub may start runs a few minutes late)
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["scripts/**", ".github/workflows/gmp.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gmp
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/fetch_gmp.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- gmp.json; then echo "no change"; exit 0; fi
+          git config user.name "gmp-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gmp.json
+          git commit -m "Update GMP $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git push
