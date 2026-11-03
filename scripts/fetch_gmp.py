@@ -102,8 +102,9 @@ def name_match(a, b):
 
 
 def live_subs():
-    """Freshest QIB subscription (x) per IPO: ipopremium.in/view/subscription first,
-    Chittorgarh live report 21 as fallback. Returns [{name, x, at, src}]."""
+    """Freshest QIB subscription (x) per IPO: Chittorgarh live report 21 (refreshed every few
+    minutes during bidding), with ipopremium.in/view/subscription filling any gaps.
+    Returns [{name, x, at, src}]."""
     got = {}
     now = dt.date.today()
     fy = f"{now.year}-{(now.year + 1) % 100:02d}" if now.month >= 4 else f"{now.year - 1}-{now.year % 100:02d}"
@@ -135,12 +136,11 @@ def live_subs():
             seg = txt[i:idx[k + 1][0] if k + 1 < len(idx) else i + 5000]
             q = re.search(r"QIBs?\s+[\d,]+\s+[\d,]+\s+([\d.]+)", seg)
             u = re.search(r"Last updated on\s*(\d{1,2}-\w{3}-\d{4}[\s\d:APMapm]*)", seg)
-            if q:
+            if q and name_key(name) not in got:
                 got[name_key(name)] = {"name": name, "x": float(q.group(1)), "at": u.group(1).strip() if u else "", "src": "ipopremium"}
     except Exception as e:
         print(f"ipopremium subscription page: {e}")
-    for v in got.values():
-        print(f"live QIB: {v['name']!r} {v['x']}x ({v['src']}, {v['at']})")
+    print(f"live QIB entries: {len(got)}")
     return list(got.values())
 
 
@@ -205,6 +205,7 @@ def main():
     live = live_subs()
     for ipo in ipos:
         hit = next((v for v in live if name_match(v["name"], ipo["name"])), None)
+        print(f"{ipo['name']!r}: page {ipo['subs']}x -> live {hit and (hit['x'], hit['src'], hit['at'])}")
         if hit:
             ipo.update(subs=hit["x"], subsSrc=hit["src"], subsAt=hit["at"])
     out = {"source": HOME, "updated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "ipos": ipos}

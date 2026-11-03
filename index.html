@@ -422,7 +422,7 @@ async function sync(){
   renderAll();
 }
 /* ---------- live QIB subscription, fetched in the browser every 2 minutes ----------
-   Sources (freshest first): ipopremium.in/view/subscription, then Chittorgarh live report 21.
+   Sources: Chittorgarh live subscription report 21 (NSE/BSE bid data), gaps filled from ipopremium.in/view/subscription.
    Same relay chain as the FinDeependence IPO Tracker; values you type yourself are never overwritten. */
 const LIVE_PROXIES=[
   u=>'https://fd-license.deepuploads27.workers.dev/data?u='+encodeURIComponent(u),
@@ -468,7 +468,7 @@ async function fetchLiveSubs(){
       const q=typeof r['QIB (x)']==='number'?r['QIB (x)']:parseFloat(String(r['QIB (x)']||'').replace(/[^\d.]/g,''));
       if(name&&isFinite(q))got[nameKey(name)]={name,x:q,at:String(r['Subscription as on']||'').trim(),src:'Chittorgarh'};})});
     if(ph){const d=new DOMParser().parseFromString(ph.replace(/></g,'> <'),'text/html');
-      parsePremiumSubs(d.body.textContent.replace(/\s+/g,' ')).forEach(r=>{if(isFinite(r.qib))got[nameKey(r.name)]={name:r.name,x:r.qib,at:r.updated,src:'ipopremium'}})}
+      parsePremiumSubs(d.body.textContent.replace(/\s+/g,' ')).forEach(r=>{if(isFinite(r.qib)&&!got[nameKey(r.name)])got[nameKey(r.name)]={name:r.name,x:r.qib,at:r.updated,src:'ipopremium'}})}
     if(Object.keys(got).length){LIVE=got;liveAt=new Date();if(applyLiveSubs()){save();renderAll()}stampLive()}
   }finally{liveBusy=false}
 }
