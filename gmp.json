@@ -1,12 +1,12 @@
 {
  "source": "https://www.ipopremium.in/",
- "updated": "2026-11-04T09:14:10+00:00",
+ "updated": "2026-11-04T17:16:51+00:00",
  "ipos": [
   {
    "src": 1432,
    "name": "Vedant Poly Fabs Ltd.",
    "exch": "NSE SME",
-   "status": "open",
+   "status": "closed",
    "priceLow": 88.0,
    "priceHigh": 94.0,
    "lot": 1200,
@@ -21,9 +21,7 @@
    "qibCr": 0.64,
    "mfCr": 0.0,
    "maxQibSh": 5725200,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "04-Nov-2026 14:39"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1431,
@@ -44,9 +42,7 @@
    "qibCr": 10.08,
    "mfCr": "",
    "maxQibSh": 3360000,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "03-Nov-2026 17:54"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1428,
@@ -56,8 +52,8 @@
    "priceLow": 190.0,
    "priceHigh": 200.0,
    "lot": 600,
-   "gmp": 6.0,
-   "gmpPct": 3.0,
+   "gmp": 8.0,
+   "gmpPct": 4.0,
    "issueCr": 56.02,
    "open": "2026-10-30",
    "close": "2026-11-03",
@@ -67,9 +63,7 @@
    "qibCr": 10.62,
    "mfCr": "",
    "maxQibSh": 1864200,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "03-Nov-2026 17:54"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1430,
@@ -79,8 +73,8 @@
    "priceLow": 150.0,
    "priceHigh": 158.0,
    "lot": 800,
-   "gmp": 75.0,
-   "gmpPct": 47.47,
+   "gmp": 110.0,
+   "gmpPct": 69.62,
    "issueCr": 57.64,
    "open": "2026-10-30",
    "close": "2026-11-03",
@@ -90,9 +84,7 @@
    "qibCr": 10.79,
    "mfCr": 43.0,
    "maxQibSh": 2401600,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "03-Nov-2026 17:55"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1429,
@@ -102,8 +94,8 @@
    "priceLow": 114.0,
    "priceHigh": 120.0,
    "lot": 1200,
-   "gmp": 23.0,
-   "gmpPct": 19.17,
+   "gmp": 28.0,
+   "gmpPct": 23.33,
    "issueCr": 34.56,
    "open": "2026-10-30",
    "close": "2026-11-03",
@@ -113,9 +105,7 @@
    "qibCr": 6.57,
    "mfCr": 16.0,
    "maxQibSh": 1921200,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "03-Nov-2026 17:54"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1427,
@@ -136,9 +126,7 @@
    "qibCr": 0.24,
    "mfCr": "",
    "maxQibSh": 3306000,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "04-Nov-2026 14:39"
+   "maxQibSrc": "ipopremium (estimate)"
   },
   {
    "src": 1424,
@@ -148,8 +136,8 @@
    "priceLow": 78.0,
    "priceHigh": 82.0,
    "lot": 182,
-   "gmp": 8.5,
-   "gmpPct": 10.37,
+   "gmp": 8.0,
+   "gmpPct": 9.76,
    "issueCr": 183.05,
    "open": "2026-10-29",
    "close": "2026-11-02",
