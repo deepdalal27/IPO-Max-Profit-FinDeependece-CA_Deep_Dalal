@@ -1,6 +1,6 @@
 {
  "source": "https://www.ipopremium.in/",
- "updated": "2026-11-05T09:51:35+00:00",
+ "updated": "2026-11-05T17:43:22+00:00",
  "ipos": [
   {
    "src": 1432,
@@ -79,8 +79,8 @@
    "priceLow": 150.0,
    "priceHigh": 158.0,
    "lot": 800,
-   "gmp": 111.0,
-   "gmpPct": 70.25,
+   "gmp": 105.0,
+   "gmpPct": 66.46,
    "issueCr": 57.64,
    "open": "2026-10-30",
    "close": "2026-11-03",
@@ -102,8 +102,8 @@
    "priceLow": 114.0,
    "priceHigh": 120.0,
    "lot": 1200,
-   "gmp": 40.0,
-   "gmpPct": 33.33,
+   "gmp": 31.0,
+   "gmpPct": 25.83,
    "issueCr": 34.56,
    "open": "2026-10-30",
    "close": "2026-11-03",
@@ -121,7 +121,7 @@
    "src": 1427,
    "name": "Antala Industries Ltd",
    "exch": "BSE SME",
-   "status": "open",
+   "status": "closed",
    "priceLow": 62.0,
    "priceHigh": 66.0,
    "lot": 2000,
@@ -138,7 +138,7 @@
    "maxQibSh": 3306000,
    "maxQibSrc": "ipopremium (estimate)",
    "subsSrc": "Chittorgarh",
-   "subsAt": "05-Nov-2026 15:19"
+   "subsAt": "05-Nov-2026 17:54"
   }
  ]
 }
