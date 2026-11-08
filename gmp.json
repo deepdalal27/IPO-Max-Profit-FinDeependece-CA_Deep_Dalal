@@ -1,30 +1,7 @@
 {
  "source": "https://www.ipopremium.in/",
- "updated": "2026-11-08T15:00:32+00:00",
+ "updated": "2026-11-08T19:31:46+00:00",
  "ipos": [
-  {
-   "src": 1432,
-   "name": "Vedant Poly Fabs Ltd.",
-   "exch": "NSE SME",
-   "status": "closed",
-   "priceLow": 88.0,
-   "priceHigh": 94.0,
-   "lot": 1200,
-   "gmp": 1.0,
-   "gmpPct": 1.06,
-   "issueCr": 56.68,
-   "open": "2026-11-02",
-   "close": "2026-11-04",
-   "allot": "2026-11-05",
-   "listing": "2026-11-09",
-   "subs": 1.0,
-   "qibCr": 0.64,
-   "mfCr": 0.0,
-   "maxQibSh": 5725200,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "04-Nov-2026 17:55"
-  },
   {
    "src": 1427,
    "name": "Antala Industries Ltd",
