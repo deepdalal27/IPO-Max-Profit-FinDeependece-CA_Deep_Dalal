@@ -1,6 +1,6 @@
 {
  "source": "https://www.ipopremium.in/",
- "updated": "2026-11-25T09:15:18+00:00",
+ "updated": "2026-11-25T19:17:35+00:00",
  "ipos": [
   {
    "src": 1418,
@@ -86,8 +86,8 @@
    "priceLow": 163.0,
    "priceHigh": 172.0,
    "lot": 87,
-   "gmp": 193.5,
-   "gmpPct": 112.5,
+   "gmp": 199.0,
+   "gmpPct": 115.7,
    "issueCr": 125.16,
    "open": "2026-12-01",
    "close": "2026-12-03",
@@ -120,12 +120,12 @@
    "src": 1440,
    "name": "Foodlink F&B Holdings (India) Ltd",
    "exch": "Mainboard",
-   "status": "upcoming",
+   "status": "open",
    "priceLow": 181.0,
    "priceHigh": 191.0,
    "lot": 78,
-   "gmp": 218.0,
-   "gmpPct": 114.14,
+   "gmp": 209.0,
+   "gmpPct": 109.42,
    "issueCr": 360.76,
    "open": "2026-11-26",
    "close": "2026-11-30",
@@ -143,8 +143,8 @@
    "priceLow": 130.0,
    "priceHigh": 142.0,
    "lot": 1000,
-   "gmp": 162.0,
-   "gmpPct": 114.08,
+   "gmp": 167.0,
+   "gmpPct": 117.61,
    "issueCr": 93.66,
    "open": "2026-11-25",
    "close": "2026-11-27",
@@ -156,7 +156,7 @@
    "maxQibSh": 6266000,
    "maxQibSrc": "ipopremium (estimate)",
    "subsSrc": "Chittorgarh",
-   "subsAt": "25-Nov-2026 14:44"
+   "subsAt": "25-Nov-2026 17:54"
   },
   {
    "src": 1434,
@@ -189,8 +189,8 @@
    "priceLow": 232.0,
    "priceHigh": 245.0,
    "lot": 600,
-   "gmp": 286.0,
-   "gmpPct": 116.73,
+   "gmp": 267.0,
+   "gmpPct": 108.98,
    "issueCr": 120.09,
    "open": "2026-11-19",
    "close": "2026-11-23",
@@ -203,29 +203,6 @@
    "maxQibSrc": "ipopremium (estimate)",
    "subsSrc": "Chittorgarh",
    "subsAt": "23-Nov-2026 17:54"
-  },
-  {
-   "src": 1438,
-   "name": "Crystal Crop Protection Ltd",
-   "exch": "Mainboard",
-   "status": "closed",
-   "priceLow": 259.0,
-   "priceHigh": 272.0,
-   "lot": 55,
-   "gmp": 290.0,
-   "gmpPct": 106.62,
-   "issueCr": 455.72,
-   "open": "2026-11-18",
-   "close": "2026-11-20",
-   "allot": "2026-11-23",
-   "listing": "2026-11-26",
-   "subs": 15.81,
-   "qibCr": 90.64,
-   "mfCr": 91.02,
-   "maxQibSh": 11764869,
-   "maxQibSrc": "ipopremium (estimate)",
-   "subsSrc": "Chittorgarh",
-   "subsAt": "20-Nov-2026 17:54"
   }
  ]
 }
